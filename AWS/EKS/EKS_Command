@@ -1,0 +1,7 @@
+aws configure
+Push the repo to ecr by using the command suggested by aws ecr
+docker images
+ls
+eksctl create cluster -f cluster.yml
+
+aws eks --region us-east-1 update-kubeconfig --name mycluster1

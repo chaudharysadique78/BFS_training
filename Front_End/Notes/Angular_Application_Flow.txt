@@ -1,0 +1,28 @@
+Flow of Angular App
+===================
+Angular App is used to create SPA (single page application)
+=======================================================
+1. When angular app is executed, the first file executed is main.ts, This file is basically starting or entry point of angular application. Here we bootstrap the main module of our AppModule so angular will load this module and everything starts from here.
+2. In app.module.ts
+bootstrap array, basically list all the components which should be known to the angular at the point of time analyse the index.html file. Here it is referencing to AppComponent.
+4. In app.component.ts
+angular analyse the configuration and understand the selector 'app-root', 
+view template is app.component.html file
+5. index.html gets loaded in the browser, now it knows which component to use.
+<app-root><app-root> element will get replaced with the view template is  app.component.html file
+Now this file content will get rendered.
+6. Go to browser and click page source of web page
+We can notice bunch of script gets added. From where it gets added.
+These script file are injected by angular cli automatically in the index.html.
+7. How ng serve command works 
+rebuilds the angular project
+it will create javascript bundles
+it will add them automatically to index.html
+it will start live development server
+8. go to cmd prompt and termiate using ctl+c and terminate the batch job if App is already running.
+9. verify using ng serve
+===============================================================================================================
+Note : index.html is a single page gets rendered in the browser and  their content can be changed dynamically 
+==============================================================================================================
+
+

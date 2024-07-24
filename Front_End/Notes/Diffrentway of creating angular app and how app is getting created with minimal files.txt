@@ -1,0 +1,111 @@
+Different ways of creating Angular App and to understand how Angular App is getting started
+============================================================================================
+Demo1: creating angular app as standalone
+==============================================
+1. npm --version (check for version higher version)  
+
+9.7.1
+
+2. ng v
+
+Angular CLI: 16.0.5
+Node: 18.16.0
+Package Manager: npm 9.7.1
+OS: win32 x64
+
+Angular:
+...
+
+Package                      Version
+------------------------------------------------------
+@angular-devkit/architect    0.1600.5 (cli-only)
+@angular-devkit/core         16.0.5 (cli-only)
+@angular-devkit/schematics   16.0.5 (cli-only)
+@schematics/angular          16.0.5 (cli-only)
+npm init @angular myApp
+
+3. ng new firstapp --standalone
+
+Note : This project will not have app.module.ts but it will create app.config.ts
+
+4. cd firstapp
+5. ng serve --open
+
+====================================================================  
+Demo2: creating angular app as minimal structure
+=====================================================================
+1. mkdir secondapp
+2. cd secondapp
+3. ng new secondapp --no-create-application
+
+If you plan to have multiple applications in the workspace, you can create an empty workspace by using the --no-create-application option. You can then use ng generate application to create an initial application. 
+
+4. (move to project directory)ng generate application home --minimal
+
+5. ng serve --open
+
+=============================================================================
+Demo3: create angular application with empty workspace and later application got added
+============================================================================
+1. mkdir thirdapp
+2. cd thirdapp
+3. ng new thirdapp --no-create-application
+4. (move to project directory)ng g application homealone --standalone
+5. ng serve --open
+
+=================================================================================
+Demo4: Effective use of main.ts, Angular app without default root component / module
+===================================================================================
+1. mkdir fourthapp
+2. cd fourthapp
+3. ng new fourthapp --standalone
+4. delete app folder
+5. edit the code in main.ts
+
+import { bootstrapApplication } from '@angular/platform-browser';
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'add-one-button', // component name used in markup
+  standalone: true, // component is self-contained
+  styles: [
+    'button { font-weight: bold; border-radius: 8px;}'
+  ],
+  template: // the component's markup
+  `
+   <button (click)="count = count + 1">Add one</button> {{ count }}
+   <button (click)="count = 0">Reset</button>
+  `,
+})
+
+// export component
+export class AddOneButtonComponent {
+  count = 0;
+}
+
+
+
+bootstrapApplication(AddOneButtonComponent)
+  .catch((err) => console.error(err));
+
+6. do the change in index.html
+===============================
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Fouthapp</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <!-- <app-root></app-root> -->
+  <add-one-button>Loading...</add-one-button>
+</body>
+</html>
+
+7. ng serve --open
+=======================================================================  
+

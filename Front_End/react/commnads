@@ -1,0 +1,20 @@
+npx create-react-app contactapp
+
+npm install react-bootstrap bootstrap
+
+npm install uuidv4
+
+npm install @mui/material @emotion/react @emotion/styled
+
+npm install @mui/material @mui/styled-engine-sc styled-components
+
+npm install @mui/icons-material
+
+npm install formik yup
+
+npm i axios
+
+
+npm i react-error-boundary
+
+npm install --save-dev jest

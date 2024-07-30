@@ -1,0 +1,57 @@
+<!--Note template variable name and name property value should be different -->
+
+<mat-toolbar color="primary">
+    <span>Restaurent Feedback Form</span>
+</mat-toolbar>
+<div>
+ <form (ngSubmit)="onSubmit(feedbackform)" #feedbackform="ngForm">
+    <mat-form-field class="input-field" appearence="fill">
+        <input matInput placeholder="First Name *" type="text" name="fname" id="fname" [(ngModel)]="fname1" #fname="ngModel" required minlength="3">
+        <div *ngIf="fname.invalid &&(fname.dirty || fname.touched)">
+            <div *ngIf="fname.errors?.['required']">Name is required</div>
+            <div *ngIf="fname.errors?.['minlength']">Your name shoud have min 3 char</div>
+        </div>
+    </mat-form-field>
+
+    <mat-form-field class="input-field" appearence="fill">
+        <input matInput placeholder="Last Name *" type="text" name="lname" id="lname" [(ngModel)]="lname1" #lname="ngModel" required minlength="3">
+        <div *ngIf="lname.invalid &&(lname.dirty || lname.touched)">
+            <div *ngIf="lname.errors?.['required']">Name is required</div>
+            <div *ngIf="lname.errors?.['minlength']">Your name shoud have min 3 char</div>
+        </div>
+    </mat-form-field>
+<br>
+    <mat-form-field class="input-field" appearence="fill">
+        <input matInput placeholder="Phone Number*" type="text" name="phoneno" id="phoneno" [(ngModel)]="phone1" #phone="ngModel" required pattern="[0-9]{10}">
+        <div *ngIf="phone.invalid &&(phone.dirty || phone.touched)">
+            <div *ngIf="phone.errors?.['required']">Phone No is required</div>
+            <div *ngIf="phone.errors?.['pattern']">10 digit Number</div>
+        </div>
+    </mat-form-field>
+
+    <mat-form-field class="input-field" appearence="fill">
+        <input matInput placeholder="Email*" type="email" name="email" id="email" [(ngModel)]="email1" #email="ngModel" required pattern="^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$">
+        <div *ngIf="email.invalid &&(email.dirty || email.touched)">
+            <div *ngIf="email.errors?.['required']">Email is required</div>
+            <div *ngIf="email.errors?.['pattern']">Invalid</div>
+        </div>
+    </mat-form-field>
+
+<br>
+    <mat-form-field class="example-full-width" appearence="legacy">
+        <input matInput #input="ngModel" [(ngModel)]="date1" [min]="minDate"  [matDatepicker]="picker" placeholder="Choose a date">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      
+      <br><br><br>
+      <!-- {{ input.errors | json }}    -->
+<!-- <input matInput type="date"  [min]="minDate | date:'yyyy-MM-dd'"> -->
+<!-- </mat-form-field> -->
+<!-- <mat-form-field>
+    <mat-label>Choose a date</mat-label>
+    <input matInput [matDatepicker]="picker">
+    <mat-hint>MM/DD/YYYY</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field> -->

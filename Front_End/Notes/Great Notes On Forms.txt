@@ -1,0 +1,813 @@
+Angular Form
+==============
+is it possible to check whether the entries made in form fields are valid prior to the form submission?
+
+Yes
+==================================================================================
+What are types of Angular Form ?
+
+1. Template driven form -> rely on directives in the template to create and manipulate the underlying object model
+2. Reactive form -> provide direct,explicit  access to the underlying forms object model
+=================================================================================
+Template driven form : implicit
+(The directive NgModel creates and manges FromControl instances for a given form element)
+
+builtin validators
+custom validators
+
+
+1. we add library in app.module.ts file
+
+import
+FormsModule
+
+2. In app.component.ts 
+two way data binding [(ngModel)]
+
+Model -> View
+View -> Model
+
+ex: email list signup form or simple form
+
+Validation -> track value changes
+
+FormControl 
+FormGroup
+FormArray
+ControlValueAccessor (bridge between FormControl instance and native DOM)
+
+
+source of truth is template-> Implicit
+
+================================================================================
+Demo1 : Template driven form
+
+1. ng new formsdemo
+
+2.  From states, True when?
+
+Pristine -> The user has not modified the control
+Dirty -> The user has modified the control
+Touched -> The user has interacted with form control ex: click or focus
+UnTouched -> The form control has not been interaced with by the user
+Valid -> The form control meets the validation rules defined in the application
+InValid -> The form control values does not meets the validation rules defined in the application
+
+3. add FormsModule in app.module.ts and bootstrap in styles.css
+
+
+@import 
+url('https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css');
+
+
+
+4. In app.component.html
+
+<h1>Welcome to NIIT</h1>
+
+<label for="name">Name</label>
+
+<input class="form-control" type="text" required name="name"
+[(ngModel)]="model.name" id="name" #name="ngModel">
+
+<div [hidden]="name.valid || name.pristine " class="alert alert-danger">
+  Field is invalid
+</div> 
+
+<h1>States of above field</h1>
+<p> Is Valid -- {{name.valid}}</p>
+<p> Is Pristine -- {{name.pristine}}</p>
+<p> Is Dirty -- {{name.dirty}}</p>
+<p> Is touched -- {{name.touched}}</p>
+
+5. In app.component.ts
+
+6. check with below changes 
+
+
+<div [hidden]="name.valid && name.pristine " class="alert alert-danger">
+  Field is invalid
+</div> 
+
+Note:
+<input class="form-control" type="text" required name="name"
+[(ngModel)]="model.name" id="name" #name="ngModel">
+
+// template variable given in element level
+
+<form (ngSubmit)="onSubmit()" #myForm="ngForm">
+
+// template variable given in form level
+
+When you will enable the submit button in the given form ?
+
+if all the form elements has no error.
+
+=========================================================================================
+Demo2: 
+=====
+1. In app.component.html
+
+<h1>States of given field</h1>
+<p> Is Valid -- {{name.valid}}</p>
+<p> Is Pristine -- {{name.pristine}}</p>
+<p> Is Dirty -- {{name.dirty}}</p>
+<p> Is touched -- {{name.touched}}</p> 
+
+<div class="container">
+  <div [hidden]="submitted">
+      <h2>Choose your favorite primary color</h2>
+      <form  (submit)="onSubmit()" #name="ngForm">
+          <div class="form-group">
+              <label for="color">Favorite Color</label>
+              <input class="form-control" type="text"  required name="name" [(ngModel)]="colorForm.color" id="color">
+
+              <div [hidden]="name.valid || name.pristine" class="alert alert-danger">Color Field is invalid
+              </div>
+          </div>
+          <button type="submit" class="btn btn-success" [disabled]="!name.valid">Submit</button>
+          <button type="button" class="btn btn-default" (click)="newColor()">Reset</button>
+      </form>
+  </div>
+ 
+ <div [hidden]="!submitted">
+      <h2>Your favorite primary color is {{colorForm.color}}</h2>
+  </div>
+=========================================================================
+2. In app.component.ts
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'formsdemo';
+  colorForm: any;
+
+  submitted=false;
+  
+  constructor() {
+    this.colorForm = {
+      color: "Red"
+    };
+  }
+  
+  
+  onSubmit() {
+    console.log(this.colorForm);
+    this.submitted=true;
+  }
+  
+  
+   newColor(){
+     this.colorForm={
+       color:" "
+     };
+     }
+
+}
+
+================================================================
+check the following:
+
+<form  (submit)="onSubmit()" #name="ngForm">
+
+or
+
+<form  (ngSubmit)="onSubmit()" #name="ngForm">
+
+but if we use some other name it will not work
+
+  <form  (ngsubmit)="onSubmit()" #name="ngForm">
+
+================================================================
+Demo3:
+======
+In app.component.html
+
+<h1>States of given field</h1>
+<p> Is Valid -- {{name.valid}}</p>
+<p> Is Pristine -- {{name.pristine}}</p>
+<p> Is Dirty -- {{name.dirty}}</p>
+<p> Is touched -- {{name.touched}}</p> 
+
+<div class="container">
+  <div [hidden]="submitted">
+      <h2>Choose your favorite primary color</h2>
+      <form  (ngSubmit)="onSubmit()" #name="ngForm">
+          <div class="form-group">
+              <label for="color">Favorite Color</label>
+              <input class="form-control" type="text"  required name="name" [(ngModel)]="colorForm.color" id="color">
+
+              <div [hidden]="name.valid || name.pristine" class="alert alert-danger">Color Field is invalid
+              </div>
+          </div>
+          <button type="submit" class="btn btn-success" [disabled]="!name.valid">Submit</button>
+          <button type="button" class="btn btn-default" (click)="newColor()">Reset</button>
+      </form>
+  </div>
+ 
+ <div [hidden]="!submitted">
+      <h2>Your favorite primary color is {{colorForm.color}}</h2>
+  </div>
+
+  <form #f="ngForm" (ngSubmit)="onSubmit1(f)" >
+    <input name="first" ngModel required #first="ngModel">
+     <input name="last" ngModel >
+    <button>Submit</button>
+  </form>
+
+  <p>First name value: {{ first.value }}</p>
+  <p>First name valid: {{ first.valid }}</p>
+  <p>Form value: {{ f.value | json }}</p>
+  <p>Form valid: {{ f.valid }}</p>
+
+
+
+In app.component.html
+
+
+import { Component } from '@angular/core';
+import {NgForm} from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'formsdemo';
+  colorForm: any;
+
+  submitted=false;
+  
+  constructor() {
+    this.colorForm = {
+      color: "Red"
+    };
+  }
+  
+  
+  onSubmit() {
+    console.log(this.colorForm);
+    this.submitted=true;
+  }
+
+  onSubmit1(f: NgForm) {
+    console.log(f.value);  
+    console.log(f.valid);  
+   }
+
+  
+   newColor(){
+     this.colorForm={
+       color:" "
+     };
+     }
+
+}
+========================================================================================
+Events mostly used in Angular
+
+Try implementing these events
+==============================
+Event name &	Description
+
+(click)	
+The click event occurs when an element is clicked.
+
+(change)	
+The change event is triggered when change occurs on the binding elements, like select, Textarea, input, and other elements.
+
+(dblclick)	
+The double-click event occurs when an element is clicked two times.
+
+(blur)	
+The blur event fires when an element has lost focus. 
+
+(submit)	
+The submit event fire when clicking on the button or inputting with type submit.
+
+(focus)	
+The focus event fires when an element has received focus
+
+(scroll)	
+The scroll event fires when the document view has been scrolled.
+
+(keyup)	
+When a user presses and releases a key, an event occurs and is mostly used with input fields. It is one of the keyboard events.
+
+(keydown)	
+The keydown event is fired when a key is pressed. It is one of the keyboard events.
+
+(keypress)	 
+The keypress event is fired when a key that produces a character value is pressed down. It is one of the keyboard events.
+
+(mousedown)	
+The mousedown event is fired at an Element when a pointing device button is pressed while the pointer is inside the element and is a mouse event.
+
+(mouseup)	
+The mouseup event occurs when a user releases a mouse button over an element and is a mouse event.
+
+(mouseenter)	
+The mouseenter event occurs when the mouse pointer is moved onto an element and is a mouse event.
+
+(mouseleave)	
+The mouseleave event occurs when the mouse pointer is moved out of an element and is a mouse event.
+
+(mousemove)	
+The mousemove event occurs when the pointer is moving while it is over an element and is a mouse event.
+
+(mouseover)	
+The mouseover event occurs when the mouse pointer is over the selected element and is a mouse event.
+
+
+(copy)	
+The copy event occurs when the user copies the content of an element. 
+
+(paste)	
+The past event occurs when the user pastes the content of an element. 
+
+(cut)	
+The cut event occurs when the user cuts the content of an element. 
+
+(drag)	
+The drag event occurs when an element or text selection is being dragged
+
+(drop)	
+The drop event occurs when dragged data is dropped.
+
+(dragover)	
+The dragover event occurs when a draggable element or text selection is being dragged over a valid drop target. 
+
+(input)	
+The input event occurs when an element gets user input. 
+
+==========================================================================================
+Demo4:
+
+In app.component.ts
+
+To add some validation thru CSS by Green / red color
+
+.ng-valid[required] {
+    border-left: 5px solid #42a948;
+}
+.ng-invalid:not(form){
+    border-left: 5px solid #a94442;
+}
+
+
+In app.component.html
+
+<h1>States of given field</h1>
+<p> Is Valid -- {{name.valid}}</p>
+<p> Is Pristine -- {{name.pristine}}</p>
+<p> Is Dirty -- {{name.dirty}}</p>
+<p> Is touched -- {{name.touched}}</p> 
+
+<div class="container">
+  <div [hidden]="submitted">
+      <h2>Choose your favorite primary color</h2>
+      <form  (ngSubmit)="onSubmit()" #name="ngForm">
+          <div class="form-group">
+              <label for="color">Favorite Color</label>
+              <input class="form-control" type="text"  required name="name" [(ngModel)]="colorForm.color" id="color">
+
+              <div [hidden]="name.valid || name.pristine" class="alert alert-danger">Color Field is invalid
+              </div>
+          </div>
+          <button type="submit" class="btn btn-success" [disabled]="!name.valid">Submit</button>
+          <button type="button" class="btn btn-default" (click)="newColor()">Reset</button>
+      </form>
+  </div>
+ 
+ <div [hidden]="!submitted">
+      <h2>Your favorite primary color is {{colorForm.color}}</h2>
+  </div>
+
+  <form #f="ngForm" (ngSubmit)="onSubmit1(f)" >
+    <input name="first" ngModel required #first="ngModel">
+     <input name="last" ngModel >
+    <button>Submit</button>
+  </form>
+
+  <p>First name value: {{ first.value }}</p>
+  <p>First name valid: {{ first.valid }}</p>
+  <p>Form value: {{ f.value | json }}</p>
+  <p>Form valid: {{ f.valid }}</p>
+
+
+  <input type="text" id="name" name="name" class="form-control"
+required minlength="4" [(ngModel)]="hero.name" #name1="ngModel">
+
+<div *ngIf="name1.invalid && (name1.dirty || name1.touched)"
+class ="alert">
+  <div *ngIf="name1.errors?.['required']">
+Name is required.
+  </div>
+  <div *ngIf="name1.errors?.['minlength']">
+Name must be at least 4 chacters long.
+  <div>
+<div>
+</div>
+
+
+In app.component.ts
+
+import { Component } from '@angular/core';
+import {NgForm} from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'formsdemo';
+  colorForm: any;
+
+  submitted=false;
+  hero:any;
+  
+  constructor() {
+    this.colorForm = {
+      color: "Red"
+    };
+    this.hero={
+      name:"default"
+      }
+    
+  }
+  
+  
+  onSubmit() {
+    console.log(this.colorForm);
+    this.submitted=true;
+  }
+
+  onSubmit1(f: NgForm) {
+    console.log(f.value);  
+    console.log(f.valid);  
+   }
+
+  
+   newColor(){
+     this.colorForm={
+       color:" "
+     };
+     }
+
+}
+
+================================================================================
+Demo5: custom directive
+
+ng g directive dir
+
+
+In dir.directive.ts
+
+import { Directive } from '@angular/core';
+import {NG_VALIDATORS, Validator,AbstractControl, ValidationErrors} from '@angular/forms';
+@Directive({
+  selector: '[appDir]',
+  providers: [{provide: NG_VALIDATORS, useExisting:DirDirective, multi: true}]
+})
+export class DirDirective implements  Validator{
+
+  constructor() { console.log("inside validator constructor")}
+
+  validate(control: AbstractControl<any, any>): ValidationErrors | null {
+    //throw new Error('Method not implemented.');
+    console.log("inside validate method");
+  if(["joinal","sukriti","gowtham"].indexOf(control.value)>-1){
+    console.log("if");
+    return null;
+  }
+  else{
+    console.log("else");
+    return {
+      appDir: false
+    }
+  }
+  }
+  
+  registerOnValidatorChange?(fn: () => void): void {
+  //  throw new Error('Method not implemented.');
+console.log("inside validator change method");  
+}
+
+
+}
+
+In app.component.html
+
+  <input type="text" id="name" name="name" class="form-control"  appDir
+required minlength="4" [(ngModel)]="hero.name" #name1="ngModel">
+
+====================================================================================
+Reactive Form:
+==============
+reactive form -> 
+validation logic is removed from the template so it is clean
+no data binding is done
+immutuable
+add elements dynamic
+easy for unit test because logic (validation) resides inside our component 
+explicit to manage the state
+change gives new state
+Observable stream
+sync access thru Observable stream
+==========================================================================
+Reactive Form -> Model - Driven Forms
+
+custom validation ?
+
+In template driven form -> creating directives
+In reactive form -> creating functions
+
+=============================================================================
+
+Demo1:
+
+1. add ReactiveFormsModule in app.module.ts
+
+2. ng g component reactivecomp
+
+3. add at top in app.component.html and also checkwhether reference is added in app.module.ts
+<app-reactivecomp></app-reactivecomp>
+	  
+
+4. In reactive.component.html
+
+<p>reactivecomp works!</p>
+<label for="name1"> Name:</label>
+    <input type="text" id="name" [formControl]="name1">
+    
+    <p> Value: {{name1.value}}
+    </p>
+    
+    <button (click)="updateName()">updateName</button>
+
+
+5. In reactive.component.ts
+
+import { Component } from '@angular/core';
+import {FormControl} from '@angular/forms'
+
+@Component({
+  selector: 'app-reactivecomp',
+  templateUrl: './reactivecomp.component.html',
+  styleUrls: ['./reactivecomp.component.css']
+})
+export class ReactivecompComponent {
+
+  name1= new FormControl('');
+
+updateName(){
+this.name1.setValue('Nancy');
+}
+
+}
+
+
+6. ng serve --open
+=======================================================
+Difference between both: 
+
+1. Template -  data flow - async, custom validation - directive, setup - Implicit, data model -unstructured and mutable     
+2. Reactive - data flow - sync,  custom validation - function,  setup - Explicit, data model - 
+structured and immutable
+
+Objective:
+
+1. How will you validate the input in reactive form
+2. Give complete form details by submiting the form in reactive 
+3. Custom validation using reactive form
+
+Reactive :
+
+1. we create FormControl instance for a specific form element  
+2. value property is used for display
+3. setValue method is used to update the  specific form element
+4. patchValue method is used to update the set of form element values
+
+control value accessor is a bridge (view to model) and (model to view)
+
+Form data will be taken in Json format.
+
+=================================================================
+
+Demo2:
+
+In reactivecomp.component.ts
+
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-reactivecomp',
+  templateUrl: './reactivecomp.component.html',
+  styleUrls: ['./reactivecomp.component.css']
+})
+export class ReactivecompComponent implements OnInit{
+  myGroup:any;
+
+  ngOnInit(): void {
+//    throw new Error('Method not implemented.');
+this.myGroup=new FormGroup({
+  firstName:new FormControl('',[
+    Validators.required,Validators.minLength(4)])
+  
+    });
+   
+}
+
+get firstName() {return this.myGroup.get('firstName')}
+  
+
+
+
+  name1= new FormControl('');
+
+updateName(){
+this.name1.setValue('Nancy');
+}
+
+}
+
+============================================================
+In reactivecomp.component.html
+
+
+<p>reactivecomp works!</p>
+<label for="name1"> Name:</label>
+    <input type="text" id="name" [formControl]="name1">
+    
+    <p> Value: {{name1.value}}
+    </p>
+    
+    <button (click)="updateName()">updateName</button>
+
+    <h1>Welcome to NIIT</h1>
+
+<label for="name">Name</label>
+<div [formGroup]="myGroup">
+<input  type="text" formControlName="firstName" id="name" class="form-control">
+<div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="alert alert-danger">
+<div *ngIf="firstName.errors?.['required']">
+  Name is required
+</div>
+<div *ngIf="firstName.errors?.['minlength']">
+  Name must be at least 4 characters long
+</div>
+</div>
+</div> 
+
+// comment get method and view for errors on learning
+=========================================================================
+Demo3:
+=====
+In reactivecomp.component.html
+
+
+<p>reactivecomp works!</p>
+<label for="name1"> Name:</label>
+    <input type="text" id="name" [formControl]="name1">
+    
+    <p> Value: {{name1.value}}
+    </p>
+    
+    <button (click)="updateName()">updateName</button>
+
+    <h1>Welcome to NIIT</h1>
+
+    <form [formGroup]="myGroup" (ngSubmit)="onSubmit()">
+    
+    <label for="name">Name</label>
+    
+      <input  type="text" formControlName="firstName" id="name" class="form-control">
+    <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="alert alert-danger">
+    <div *ngIf="firstName.errors?.['required']">
+      Name is required
+    </div>
+    <div *ngIf="firstName.errors?.['minlength']">
+      Name must be at least 4 characters long
+    </div>
+    </div>
+    <div formGroupName="address">
+      <h2>Address</h2>
+    
+      <label for="street">Street: </label>
+      <input id="street" type="text" formControlName="street">
+    
+      <label for="city">City: </label>
+      <input id="city" type="text" formControlName="city">
+    
+      <label for="state">State: </label>
+      <input id="state" type="text" formControlName="state">
+    
+      <label for="zip">Zip Code: </label>
+      <input id="zip" type="text" formControlName="zip">
+    </div>
+    <p>Complete the form to enable button.</p>
+    <button type="submit " [disabled]="!myGroup.valid ">Submit</button>
+    
+    </form>
+    <hr>
+    
+    <p>Form Value: {{ myGroup.value | json }}</p>
+    
+    <p>Form Status: {{ myGroup.status }}</p>
+    
+    <button (click)="updateProfile()">Update Profile</button>
+    
+
+In reactivecomp.component.ts
+
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-reactivecomp',
+  templateUrl: './reactivecomp.component.html',
+  styleUrls: ['./reactivecomp.component.css']
+})
+export class ReactivecompComponent implements OnInit{
+  myGroup:any;
+
+  ngOnInit(): void {
+    this.myGroup=new FormGroup({
+  firstName:new FormControl('',[
+    Validators.required,Validators.minLength(4)]),
+    
+    address:new FormGroup({
+      street:new FormControl(''),
+      city:new FormControl(''),
+      state:new FormControl(''),
+      zip:new FormControl('')
+    })
+  
+    });
+  
+    
+    }
+  
+get firstName() {return this.myGroup.get('firstName')}
+  
+onSubmit(){
+  console.log(this.myGroup.value);
+  }
+
+  updateProfile(){
+    this.myGroup.patchValue({
+      firstName:'niit',
+      address:{
+        city:'delhi',
+        zip:'400001'
+      }});
+  }
+
+
+  name1= new FormControl('');
+
+updateName(){
+this.name1.setValue('Nancy');
+}
+
+}
+
+===========================================================================================
+Demo4 : custom validation
+=========================
+
+1. create a file in app folder with the name custom.ts for custom validation function
+
+import{ValidatorFn,ValidationErrors,AbstractControl} from '@angular/forms';
+
+  export function forbiddenNameValidator(nameRe: RegExp): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const forbidden = nameRe.test(control.value);
+      return forbidden ? {forbiddenName: {value: control.value}} : null;
+    };
+  }
+
+2. add the import in reactivecomp.component.ts
+
+import {forbiddenNameValidator} from '../custom';
+
+firstName:new FormControl('',[Validators.required,Validators.minLength(3),forbiddenNameValidator(/bob/i)]),
+
+3. changes in reactivecomp.component.html
+
+<div *ngIf="firstName.errors?.['forbiddenName']">
+            Name cannot be a Bob.
+        </div>
+
+4. ng serve --open
+
+===============================================================
